@@ -160,11 +160,13 @@ int Depot::initialize(bool writable) {
 	}
 	
 	if (writable) {
+#if 0
 		uid_t uid = getuid();
 		if (uid) {
 			fprintf(stdout, "You must be root to perform that operation.\n");
 			exit(3);
-		}			
+		}
+#endif /* 0 */
 		
 		res = this->create_storage();
 		if (res) return res;
