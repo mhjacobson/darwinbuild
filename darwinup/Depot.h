@@ -100,7 +100,7 @@ struct Depot {
 	int list(int count, char** args);
 	static int list_archive(Archive* archive, void* context);
 
-	int install(const char* path);
+	int install(const char* path, const char* as_name);
 	int install(Archive* archive);
 	static int install_file(File* file, void* context);
 	static int backup_file(File* file, void* context);

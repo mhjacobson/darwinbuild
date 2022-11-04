@@ -173,6 +173,11 @@ int Archive::prune_compacted_archive(const char* prefix) {
 	return res;
 }
 
+void Archive::set_name(const char* name) {
+	free(m_name);
+	m_name = strdup(name);
+}
+
 int Archive::extract(const char* destdir) {
 	// not implemented
 	return -1;

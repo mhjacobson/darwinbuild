@@ -735,11 +735,15 @@ int Depot::install_file(File* file, void* ctx) {
 }
 
 
-int Depot::install(const char* path) {
+int Depot::install(const char* path, const char* as_name) {
 	int res = 0;
 	char uuid[37];
 	Archive* archive = ArchiveFactory(path, this->downloads_path());
 	if (archive) {
+		if (as_name) {
+			archive->set_name(as_name);
+		}
+
 		res = this->install(archive);
 		if (res == 0) {
 			fprintf(stdout, "Installed archive: %llu %s \n", 

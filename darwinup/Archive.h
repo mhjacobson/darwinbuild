@@ -136,6 +136,9 @@ struct Archive {
 	// Removes the compacted backing-store file from disk.
 	int prune_compacted_archive(const char* prefix);
 
+	// Changes the archive name.
+	void set_name(const char* name);
+
 	protected:
 
 	// Constructor for subclasses and Depot to use when 

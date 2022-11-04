@@ -60,6 +60,7 @@ void usage(char* progname) {
 	fprintf(stderr, "          -r        gracefully restart when finished           \n");	
 #endif
 	fprintf(stderr, "          -v        verbose (use -vv for extra verbosity)      \n");
+	fprintf(stderr, "          -a NAME   use alternate archive name when installing \n");
 	fprintf(stderr, "                                                               \n");
 	fprintf(stderr, "commands:                                                      \n");
 	fprintf(stderr, "          files      <archive>                                 \n");
@@ -107,6 +108,7 @@ uint32_t dryrun;
 int main(int argc, char* argv[]) {
 	char* progname = strdup(basename(argv[0]));      
 	char* path = NULL;
+	char* as_name = NULL;
 	bool disable_automation = true;
 #if __MAC_OS_X_VERSION_MIN_REQUIRED >= 1060
 	bool restart = false;
@@ -114,9 +116,9 @@ int main(int argc, char* argv[]) {
 	
 	int ch;
 #if __MAC_OS_X_VERSION_MIN_REQUIRED >= 1060
-	while ((ch = getopt(argc, argv, "Dfnp:rvh")) != -1) {
+	while ((ch = getopt(argc, argv, "Dfnp:rva:h")) != -1) {
 #else
-	while ((ch = getopt(argc, argv, "Dfnp:vh")) != -1) {
+	while ((ch = getopt(argc, argv, "Dfnp:va:h")) != -1) {
 #endif
 		switch (ch) {
 		case 'D':
@@ -148,6 +150,9 @@ int main(int argc, char* argv[]) {
 				verbosity <<= 1;
 				verbosity |= VERBOSE;
 				break;
+		case 'a':
+				as_name = optarg;
+				break;
 		case '?':
 		case 'h':
 		default:
@@ -171,6 +176,16 @@ int main(int argc, char* argv[]) {
 		asprintf(&path, "/opt/local/");
 	} else {
 		IF_DEBUG("option: path is %s\n", path);
+	}
+
+	if (as_name != NULL) {
+		if (strcmp(argv[0], "install") != 0) {
+			fprintf(stderr, "Error: -a may only be used with install\n");
+			exit(4);
+		} else if (argc > 2) {
+			fprintf(stderr, "Error: -a may only be used with a single archive\n");
+			exit(4);
+		}
 	}
 
 	Depot* depot = new Depot(path);
@@ -222,7 +237,7 @@ int main(int argc, char* argv[]) {
 					}
 					res = DEPOT_ERROR;
 				}							
-				if (res == 0) res = depot->install(argv[i]);
+				if (res == 0) res = depot->install(argv[i], as_name);
 			} else if (strcmp(argv[0], "upgrade") == 0) {
 				if (i==1 && depot->initialize(true)) exit(14);
 				// find most recent matching archive by name
@@ -232,7 +247,7 @@ int main(int argc, char* argv[]) {
 					res = 5;
 				}
 				// install new archive
-				if (res == 0) res = depot->install(argv[i]);
+				if (res == 0) res = depot->install(argv[i], old->name());
 				// uninstall old archive
 				if (res == 0) res = depot->uninstall(old);
 			} else if (strcmp(argv[0], "files") == 0) {
