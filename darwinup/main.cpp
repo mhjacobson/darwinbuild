@@ -169,7 +169,7 @@ int main(int argc, char* argv[]) {
 #endif
 	
 	if (!path) {
-		asprintf(&path, "/");
+		asprintf(&path, "/opt/local/");
 	} else {
 		IF_DEBUG("option: path is %s\n", path);
 	}
