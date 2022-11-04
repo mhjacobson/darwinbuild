@@ -51,7 +51,7 @@ void usage(char* progname) {
 	fprintf(stderr, "                                                               \n");
 	fprintf(stderr, "options:                                                       \n");
 #if __MAC_OS_X_VERSION_MIN_REQUIRED >= 1060
-	fprintf(stderr, "          -d        disable helpful automation                 \n");	
+	fprintf(stderr, "          -D        enable helpful automation                  \n");	
 #endif
 	fprintf(stderr, "          -f        force operation to succeed at all costs    \n");
 	fprintf(stderr, "          -n        dry run                                    \n");
@@ -107,27 +107,26 @@ uint32_t dryrun;
 int main(int argc, char* argv[]) {
 	char* progname = strdup(basename(argv[0]));      
 	char* path = NULL;
-	bool disable_automation = false;
+	bool disable_automation = true;
 #if __MAC_OS_X_VERSION_MIN_REQUIRED >= 1060
 	bool restart = false;
 #endif
 	
 	int ch;
 #if __MAC_OS_X_VERSION_MIN_REQUIRED >= 1060
-	while ((ch = getopt(argc, argv, "dfnp:rvh")) != -1) {
+	while ((ch = getopt(argc, argv, "Dfnp:rvh")) != -1) {
 #else
-	while ((ch = getopt(argc, argv, "dfnp:vh")) != -1) {
+	while ((ch = getopt(argc, argv, "Dfnp:vh")) != -1) {
 #endif
 		switch (ch) {
-		case 'd':
-				disable_automation = true;
+		case 'D':
+				disable_automation = false;
 				break;
 		case 'f':
 				force = 1;
 				break;
 		case 'n':
 				dryrun = 1;
-				disable_automation = true;
 				break;
 		case 'p':
 				if (optarg[0] != '/') {
