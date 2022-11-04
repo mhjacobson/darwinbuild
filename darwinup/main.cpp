@@ -179,7 +179,7 @@ int main(int argc, char* argv[]) {
 	}
 
 	if (as_name != NULL) {
-		if (strcmp(argv[0], "install") != 0) {
+		if (strcmp(argv[0], "install") != 0 && strcmp(argv[0], "upgrade") != 0) {
 			fprintf(stderr, "Error: -a may only be used with install\n");
 			exit(4);
 		} else if (argc > 2) {
@@ -241,7 +241,7 @@ int main(int argc, char* argv[]) {
 			} else if (strcmp(argv[0], "upgrade") == 0) {
 				if (i==1 && depot->initialize(true)) exit(14);
 				// find most recent matching archive by name
-				Archive* old = depot->get_archive(basename(argv[i]));
+				Archive* old = depot->get_archive(as_name ? as_name : basename(argv[i]));
 				if (!old) {
 					fprintf(stderr, "Error: unable to find a matching root to upgrade.\n");
 					res = 5;
